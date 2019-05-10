@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
 
     private List<Note> notes = new ArrayList<>();
+    private onItemClickListener listener;
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_items,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_items, parent, false);
         return new NoteHolder(view);
     }
 
@@ -56,7 +57,26 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHolder> {
             textViewDesc = itemView.findViewById(R.id.text_View_Desc);
             textViewPriority = itemView.findViewById(R.id.text_View_priority);
             textViewTitle = itemView.findViewById(R.id.text_View_Title);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (listener != null && pos != RecyclerView.NO_POSITION)
+                        listener.onItemClick(notes.get(pos));
+                }
+            });
+
         }
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.listener = listener;
+    }
+
+
+    public interface onItemClickListener {
+        void onItemClick(Note note);
     }
 
 }

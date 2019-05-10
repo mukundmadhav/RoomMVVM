@@ -11,11 +11,12 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
 
     public static final String EXTRA_TITLE = "com.mukundmadhav.room.EXTRA_TITLE";
     public static final String EXTRA_DESC = "com.mukundmadhav.room.EXTRA_DESC";
     public static final String EXTRA_PRI = "com.mukundmadhav.room.EXTRA_PRI";
+    public static final String EXTRA_ID = "com.mukundmadhav.room.EXTRA_ID";
 
     private EditText edit_title, edit_desc;
     private NumberPicker numberPicker;
@@ -33,7 +34,17 @@ public class AddNoteActivity extends AppCompatActivity {
         numberPicker.setMaxValue(10);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Note");
+
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit Note");
+            edit_title.setText(intent.getStringExtra(EXTRA_TITLE));
+            edit_desc.setText(intent.getStringExtra(EXTRA_DESC));
+            numberPicker.setValue(intent.getIntExtra(EXTRA_PRI, 1));
+        } else
+            setTitle("Add Note");
+
 
     }
 
@@ -60,16 +71,23 @@ public class AddNoteActivity extends AppCompatActivity {
         String desc = edit_desc.getText().toString();
         int priority = numberPicker.getValue();
 
-        if(title.trim().isEmpty() || desc.trim().isEmpty()) {
+        if (title.trim().isEmpty() || desc.trim().isEmpty()) {
             Toast.makeText(this, "Please insert values", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Intent data = new Intent();
-        data.putExtra(EXTRA_TITLE,title);
-        data.putExtra(EXTRA_DESC,desc);
-        data.putExtra(EXTRA_PRI,priority);
-        setResult(RESULT_OK,data);
+        data.putExtra(EXTRA_TITLE, title);
+        data.putExtra(EXTRA_DESC, desc);
+        data.putExtra(EXTRA_PRI, priority);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+
+        if (id != -1)
+            data.putExtra(EXTRA_ID,id);
+
+        setResult(RESULT_OK, data);
+
         finish();
 
     }
